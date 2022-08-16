@@ -2,11 +2,13 @@
 // import 'package:google_fonts_arabic/fonts.dart';
 // import 'package:google_fonts_arabic/fonts.dart';
 
+import 'package:calories/AppRouter.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_svg/svg.dart';
 
+import 'HomePage.dart';
 import 'InPutUi.dart';
 import 'colorText.dart';
 
@@ -18,10 +20,7 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   void delay() {
     Future.delayed(Duration(milliseconds: 1500), () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) =>InPutUi()  ),
-      );
+      AppRouter.NavigatorToWidgetWithReplacement(HomePage());
 
     });
   }
@@ -52,11 +51,11 @@ class _SplashScreenState extends State<SplashScreen> {
 
               const Center(
                 child: GradientText(
-                  'Calories Counter',
+                  'POWER GYM',
                   style: TextStyle(fontSize: 40),
                   gradient: LinearGradient(colors: [
-                    Color(0xffAEBAF8),
-                    Color(0xffC973FF),
+                    Color(0xff8F3CC3),
+                    Color(0xff6A7CD8),
                   ]),
                 ),
               ),

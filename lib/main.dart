@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:provider/provider.dart';
 
+import 'AppRouter.dart';
+import 'DB/Db_provider.dart';
+import 'DB/db_helper.dart';
 import 'InPutUi.dart';
 import 'InfoPlayer.dart';
 import 'Players.dart';
 import 'SplachScreen.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await DbHelper.dbHelper.initDatabase();
   runApp(const MyApp());
 }
 
@@ -25,11 +31,21 @@ class _MyAppState extends State<MyApp> {
         minTextAdapt: true,
         splitScreenMode: true,
       builder: (context , child) {
-        return MaterialApp(
-          debugShowCheckedModeBanner: false,
-          home: InfoPlayer(),
-          theme:ThemeData(fontFamily: "Schyler"),
+        return MultiProvider(
+          providers: [
+            ChangeNotifierProvider<DbProvider>(
+              create: (context) {
+                return DbProvider();
+              },),
 
+          ],
+          child: MaterialApp(
+            debugShowCheckedModeBanner: false,
+            navigatorKey: AppRouter.navKey,
+            home: SplashScreen(),
+            theme:ThemeData(fontFamily: "Schyler"),
+
+          ),
         );
       }
     );

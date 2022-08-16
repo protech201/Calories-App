@@ -1,270 +1,203 @@
+import 'package:calories/Custom/Info_Custom.dart';
+import 'package:calories/DB/playerModel.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/src/size_extension.dart';
+import 'package:flutter_svg/svg.dart';
+import 'package:provider/provider.dart';
+
+import 'Custom/Button_Custom.dart';
+import 'DB/Db_provider.dart';
 
 class InfoPlayer extends StatefulWidget {
-  const InfoPlayer({Key? key}) : super(key: key);
+  PlayerModel player;
+  InfoPlayer(this.player);
+  // const InfoPlayer({Key? key}) : super(key: key);
 
   @override
   _InfoPlayerState createState() => _InfoPlayerState();
 }
 
 class _InfoPlayerState extends State<InfoPlayer> {
+  GlobalKey<FormState> InPutKey = GlobalKey();
+  String? weightVaidator (String x){
+    if(x.isEmpty)
+      return 'Weight is empty';
+  }
+  String? cal_dayVaidator (String x){
+    if(x.isEmpty)
+      return 'Calories / Day is empty';
+  }
+
+  ButtonProgress(){
+
+    showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Progress',style: TextStyle(fontSize: 25.sp,color: Color(0xff8F3CC3)),),
+            content: SingleChildScrollView(
+              child: Form(
+                key: InPutKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    TextFormField(
+                      onChanged: (value) {
+                        setState(() {
+                          // valueText = value;
+                        });
+                      },
+                      // controller: _textFieldController,
+                      keyboardType: TextInputType.number,
+                      validator: (x)=>weightVaidator(x!),
+                      style: TextStyle(color: Color(0xff8F3CC3),fontSize: 22.sp),
+                      decoration: InputDecoration(
+                          labelText: "Weight",
+                          labelStyle: TextStyle(color: Color(0xff6A7CD8),fontSize: 22.sp)),
+                    ),
+                    TextFormField(
+                      onChanged: (value) {
+                        setState(() {
+                          // valueText = value;
+                        });
+                      },
+                      keyboardType: TextInputType.number,
+                      validator: (x)=>cal_dayVaidator(x!),
+                      // controller: _textFieldController,
+                      style: TextStyle(color: Color(0xff8F3CC3),fontSize: 22.sp),
+                      decoration: InputDecoration(
+                          labelText: "Calories / Day",
+                          labelStyle: TextStyle(color: Color(0xff6A7CD8),fontSize: 22.sp)),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            actions: <Widget>[
+              FlatButton(
+                color: Colors.red,
+                textColor: Colors.white,
+                child: Text('CANCEL'),
+                onPressed: () {
+                  setState(() {
+                    Navigator.pop(context);
+                  });
+                },
+              ),
+              FlatButton(
+                color: Colors.green,
+                textColor: Colors.white,
+                child: Text('OK'),
+                onPressed: () {
+                  setState(() {
+                    // codeDialog = valueText;
+                    if(InPutKey.currentState!.validate())
+                      if(InPutKey.currentState!.validate()){
+                        Navigator.pop(context);
+                        var snackBar = SnackBar(content: Text('Done successfully'),
+                          backgroundColor: Colors.red,
+                          duration: Duration(seconds: 1),);
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }
+                  });
+                },
+              ),
+            ],
+          );
+        });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xfff5f5f7),
-
-      // appBar: AppBar(
-      //   // title: Center(child: Text('Players',style: TextStyle(fontSize: 25.sp),)),
-      //
-      // ),
       body: SafeArea(
-        child: Column(
-          children: [
-            //Info
-            Container(
-              padding: EdgeInsets.all(10),
-              alignment: Alignment.center,
-              // width: MediaQuery.of(context).size.width/1,
-              height: 200.h,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.only(bottomRight: Radius.circular(15),bottomLeft: Radius.circular(15)),
-                gradient: LinearGradient(colors: [
-                  Color(0xff6A7CD8),
-                  Color(0xff8F3CC3),
-                ]),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Icon(Icons.arrow_back_outlined,color: Colors.white,size: 25.sp,),
-                  Spacer(),
-                  Row(
-                    children: [
-                      ClipRRect(
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              //--Info Player
+              Container(
+                padding: EdgeInsets.all(10),
+                alignment: Alignment.center,
+                // width: MediaQuery.of(context).size.width/1,
+                height: 250.h,
+                decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.only(bottomRight: Radius.circular(15),bottomLeft: Radius.circular(15)),
+                  gradient: LinearGradient(colors: [
+                    Color(0xff6A7CD8),
+                    Color(0xff8F3CC3),
+                  ]),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //back
+                    InkWell(
+                        onTap: (){
+                          Navigator.pop(context);
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width/1,
+                          alignment: Alignment.centerLeft,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 8),
+                            child: Icon(Icons.arrow_back_outlined,color: Colors.white,size: 25.sp,),
+                          ),
+                        )),
+                    const Spacer(),
+                    //Info
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SvgPicture.asset("assets/images/calcilator3.svg",
+                          width: MediaQuery.of(context).size.width/3.5,),
+                        SizedBox(width: 10.w,),
 
-                          borderRadius: BorderRadius.all(Radius.circular(25)),
-
-                          child: Image.asset('assets/images/man.jpg',width: 105.w,height: 125.h,)),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Abdallah Gh',
-                            style: TextStyle(fontSize: 25.sp,fontWeight: FontWeight.bold,color: Colors.white),),
-                          Text('84 Kg',
-                            style: TextStyle(fontSize: 18.sp,color: Colors.white),),
-                          Text('1856 cal/day',
-                            style: TextStyle(fontSize: 18.sp,color: Colors.white),),
-                        ],
-                      )
-                    ],
-                  ),
-                  Spacer(),
-                ],
-              ),
-            ),
-            SizedBox(height: 20.h,),
-            //--List Progress
-            SizedBox(
-              height: 480.h,
-              width: 325.w,
-              child: ListView(
-                children: [
-                  Container(
-                    height: 70,
-                    width: 325.w,
-                    alignment: Alignment.center,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: Color(0xffF5F5F7),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0x29000000),
-                          offset: Offset(-2, -2),
-                          blurRadius: 2,
-                        ),
-                        BoxShadow(
-                          color: Color(0xffffffff),
-                          offset: Offset(2, 2),
-                          blurRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
+                        Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text('Week 1',
-                              style: TextStyle(fontSize: 30.sp,
-                                  fontWeight: FontWeight.bold,
-                              color: Color(0xff6A7CD8)),),
-                            Spacer(),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                              Row(
-                                children: [
-                                  Text('84 KG',
-                                    style: TextStyle(fontSize: 20.sp,color: Color(0xff6A7CD8)),),
-                                  SizedBox(width: 10,),
-                                  Text('0.0 %',
-                                    style: TextStyle(fontSize: 20.sp,color: Colors.red),),
-                                ],
-                              ),
-                              Text('1856 cal/day',
-                                style: TextStyle(fontSize: 20.sp,color: Color(0xff6A7CD8)),),
-
-                            ],)
+                            Text((widget.player.name!),
+                              style: TextStyle(fontSize: 30.sp,fontWeight: FontWeight.normal,color: Colors.white),),
+                            Text(widget.player.address!,
+                              style: TextStyle(fontSize: 20.sp,fontWeight: FontWeight.normal,color: Colors.white),),
+                            Text(widget.player.phone!,
+                              style: TextStyle(fontSize: 20.sp,fontWeight: FontWeight.normal,color: Colors.white),),
                           ],
                         ),
-                    ),
-
-                  ),
-                  SizedBox(height: 20.h,),
-                  Container(
-                    height: 70,
-                    width: 325.w,
-                    alignment: Alignment.center,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: Color(0xffF5F5F7),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0x29000000),
-                          offset: Offset(-2, -2),
-                          blurRadius: 2,
-                        ),
-                        BoxShadow(
-                          color: Color(0xffffffff),
-                          offset: Offset(2, 2),
-                          blurRadius: 2,
-                        ),
                       ],
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Text('Week 2',
-                            style: TextStyle(fontSize: 30.sp,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xff6A7CD8)),),
-                          Spacer(),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text('84 KG',
-                                    style: TextStyle(fontSize: 20.sp,color: Color(0xff6A7CD8)),),
-                                  SizedBox(width: 10,),
-                                  Text('0.0 %',
-                                    style: TextStyle(fontSize: 20.sp,color: Colors.red),),
-                                ],
-                              ),
-                              Text('1856 cal/day',
-                                style: TextStyle(fontSize: 20.sp,color: Color(0xff6A7CD8)),),
-
-                            ],)
-                        ],
-                      ),
-                    ),
-
-                  ),
-                  SizedBox(height: 20.h,),
-                  Container(
-                    height: 70,
-                    width: 325.w,
-                    alignment: Alignment.center,
-                    decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                      color: Color(0xffF5F5F7),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Color(0x29000000),
-                          offset: Offset(-2, -2),
-                          blurRadius: 2,
-                        ),
-                        BoxShadow(
-                          color: Color(0xffffffff),
-                          offset: Offset(2, 2),
-                          blurRadius: 2,
-                        ),
-                      ],
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        children: [
-                          Text('Week 3',
-                            style: TextStyle(fontSize: 30.sp,
-                                fontWeight: FontWeight.bold,
-                                color: Color(0xff6A7CD8)),),
-                          Spacer(),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                children: [
-                                  Text('84 KG',
-                                    style: TextStyle(fontSize: 20.sp,color: Color(0xff6A7CD8)),),
-                                  SizedBox(width: 10,),
-                                  Text('0.0 %',
-                                    style: TextStyle(fontSize: 20.sp,color: Colors.red),),
-                                ],
-                              ),
-                              Text('1856 cal/day',
-                                style: TextStyle(fontSize: 20.sp,color: Color(0xff6A7CD8)),),
-
-                            ],)
-                        ],
-                      ),
-                    ),
-
-                  ),
-                  SizedBox(height: 20.h,),
-
-                ],
+                    const Spacer(),
+                  ],
+                ),
               ),
-            ),
-            //Progress
-            Container(
-              alignment: Alignment.center,
-              width: 325.w,
-              height: 60,
-              decoration: const BoxDecoration(
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                gradient: LinearGradient(colors: [
-                  Color(0xff8F3CC3),
-                  Color(0xff6A7CD8),
-
-                ]),
-                boxShadow: [
-                  BoxShadow(
-                    color: Color(0x29000000),
-                    offset: Offset(-2, -2),
-                    blurRadius: 2,
+              SizedBox(height: 20.h,),
+              //--List Progress
+              SizedBox(
+                height: 425.h,
+                width: 325.w,
+                child: SingleChildScrollView(
+                  child: Column(
+                    children: [
+                      InfoCustom(title: 'Age', info: (widget.player.age??'0') + '  Years'),
+                      SizedBox(height: 20.h,),
+                      InfoCustom(title: 'Height', info: (widget.player.height??'0') + '  CM'),
+                      SizedBox(height: 20.h,),
+                      InfoCustom(title: 'Weight', info: (widget.player.weight??'0') + '  KG'),
+                      SizedBox(height: 20.h,),
+                      InfoCustom(title: 'Cal / Day', info: widget.player.calDay??'0'),
+                    ],
                   ),
-                  BoxShadow(
-                    color: Color(0xffffffff),
-                    offset: Offset(2, 2),
-                    blurRadius: 2,
-                  ),
-                ],
+                ),
               ),
-              child: Text("Progress",style: TextStyle(
-                  fontSize: 30,
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold
-              ),),
-            ),
+              //--Progress
+              // Button_Custom(title:'Progress',function: ButtonProgress,)
 
-
-
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
+
