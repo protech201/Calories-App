@@ -1,6 +1,9 @@
 # calories
 
-A new Flutter project.
+Power gym
+
+![Power gym](https://user-images.githubusercontent.com/108319392/190515461-8a368b51-a6b3-43a8-ae35-ff5f9ebaf307.jpg)
+
 
 ## Getting Started
 
